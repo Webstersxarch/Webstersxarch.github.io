@@ -161,6 +161,55 @@
   </div>
 </section>
 
+<section id="waitlist">
+  <div class="section-head">
+    <span class="eyebrow mono">STAY IN THE LOOP</span>
+    <h2>Get notified when a new build drops.</h2>
+  </div>
+  <form id="waitlist-form" style="display:flex; gap:10px; flex-wrap:wrap; max-width:480px;">
+    <input
+      type="email"
+      id="waitlist-email"
+      required
+      placeholder="you@business.com"
+      style="flex:1; min-width:220px; background:var(--panel); border:1px solid var(--line); color:var(--ink); padding:13px 16px; border-radius:6px; font-family:'Inter',sans-serif; font-size:14px;"
+    />
+    <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer;">Join waitlist</button>
+  </form>
+  <p id="waitlist-status" style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--dim); margin-top:12px;"></p>
+</section>
+
+<script>
+  document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('waitlist-email').value;
+    const statusEl = document.getElementById('waitlist-status');
+    const submitBtn = e.target.querySelector('button');
+
+    statusEl.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+
+    try {
+      const response = await fetch(http://localhost:5678/webhook/waitlist-signup, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: 'portfolio-landing-page' })
+      });
+
+      if (response.ok) {
+        statusEl.textContent = "You're on the list. I'll reach out when there's something new.";
+        e.target.reset();
+      } else {
+        statusEl.textContent = 'Something went wrong — try again in a moment.';
+      }
+    } catch (err) {
+      statusEl.textContent = 'Something went wrong — try again in a moment.';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
 <footer>
   <p>Built by Webster Jaranilla — available for automation &amp; AI agent work.</p>
   <a href="mailto:websterjaranilla@gmail.com">websterjaranilla@gmail.com</a>
